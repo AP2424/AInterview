@@ -1,0 +1,85 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="video-mask">
+        <video id="camera" autoplay playsinline></video>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+<script>
+    const video = document.getElementById('camera');
+    let mediaRecorder;
+    let proctorModel;
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+            video.srcObject = stream;
+            mediaRecorder = new MediaRecorder(stream);
+     
+     });
+
+    /*const proctorModel = faceLandmarksDetection.load(
+        faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
+    );*/
+    async function loadModel() {
+        proctorModel = await blazeface.load();
+    }
+
+    loadModel();
+
+    async function checkCamera() {
+        const predictions = await proctorModel.estimateFaces(video, false);
+        if (predictions.length === 0) {
+            alert("Face not detected, you should be visible!");
+        } else {
+            console.log(predictions[0].annotations);
+            const eyes = predictions[0].annotations.leftEyeUpper0.concat(predictions[0].annotations.rightEyeUpper0);
+            const avgEyeY = eyes.reduce((sum, p) => sum + p[1], 0) / eyes.length;
+            if (avgEyeY < 200) {
+                alert("keep your eyes on the screen!");
+            }
+        }
+    }
+    setInterval(checkCamera, 3000);
+
+    let violationCount = 0;
+    const MINHEIGHT=600;
+    const MINWIDTH=800;
+
+    function apply_penalties() {
+        if (violationCount > 1) {
+                alert("Repeated rules violation. You are disqualified");
+            } 
+            else {
+                alert("You are not allowed to exit the interview page! One more time and you are disqualified");
+            }
+    }
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            violationCount++;
+            if (violationCount > 1) {
+                apply_penalties();
+        }
+    }});
+
+    document.addEventListener('blur', function() {
+        violationCount++;
+        if (violationCount > 1) {
+            apply_penalties();
+    }});
+
+    window.addEventListener('resize', () => {
+    if (window.innerWidth < MINWIDTH || window.innerHeight < MINHEIGHT) {
+        violationCount++;
+        apply_penalties();
+    }
+});
+</script>

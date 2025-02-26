@@ -1,0 +1,131 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programs</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<template id="question-template">
+    <div class="question">
+        <fieldset class="question-fieldset">
+            <label for="question-main">Question: </label><br>
+            <input type="text" id="question-main" name="question[]"><br>
+            <label for="maxtime">Time to answer (s)</label>
+            <input type="number" id="maxtime" name="maxtime[]" value="60"><br>
+            <input type="radio" checked id="factual" name="qtype[]", value="factual">
+            <label for="factual">Factual question</label><br>
+            <input type="radio" id="knowledge" name="qtype[]", value="knowledge">
+            <label for="knowledge">Knowledge question, with answer</label><br>
+            <label for="answer">Answer: </label><br>
+            <input type="text" id="answer" name="answer[]"><br>
+            <button type="button" id="del-button">Delete</button>
+        </fieldset>
+    </div>
+</template>
+<script>
+    let questionCount = 0;
+    function addExtraComponents(questionNode) {
+        section = questionNode.querySelector('.question');
+        console.log(section);
+        factual = questionNode.querySelector('#factual');
+        knowledge = questionNode.querySelector('#knowledge');
+        answer = questionNode.querySelector('#answer');
+        function typeChangeEvent(event) {
+            const section = event ? event.target.closest('.question') : questionNode;
+            answer = section.querySelector('#answer');
+            factual = section.querySelector('#factual');
+            answer.disabled = factual.checked;
+        }
+        function deleteQuestion(event) {
+            event.target.closest('.question').remove();
+            autoSaveForm();
+            questionCount -= 1
+        }
+        factual.addEventListener("change", typeChangeEvent);
+        knowledge.addEventListener("change", typeChangeEvent);
+        typeChangeEvent();
+        questionCount++;
+        deleteButton = questionNode.querySelector('#del-button');
+        deleteButton.addEventListener("click", deleteQuestion);
+    }
+    function updateFieldNames(questionNode) {
+        questionNode.querySelector('#question-main').name = `question_${questionCount}`;
+        questionNode.querySelector('#maxtime').name = `maxtime_${questionCount}`;
+        questionNode.querySelector('#factual').name = `qtype_${questionCount}`;
+        questionNode.querySelector('#knowledge').name = `qtype_${questionCount}`;
+        questionNode.querySelector('#answer').name = `answer_${questionCount}`;
+    }
+
+    function addNewQuestion() {
+        const template = document.getElementById("question-template");
+        const container = document.getElementById("questions-container");
+        const newQuestion = document.importNode(template.content, true);
+        addExtraComponents(newQuestion);
+        updateFieldNames(newQuestion);
+        container.appendChild(newQuestion);
+    }
+
+    function addExistingQuestion(text, time, type, answer) {
+        const template = document.getElementById("question-template");
+        const container = document.getElementById("questions-container");
+        const newQuestion = document.importNode(template.content, true);
+        newQuestion.querySelector("#question-main").value = text;
+        newQuestion.querySelector('#maxtime').value = time;
+        if (type === "factual") newQuestion.querySelector('#factual').checked = true;
+        else newQuestion.querySelector('#knowledge').checked = true;
+        newQuestion.querySelector('#answer').value = answer;
+        addExtraComponents(newQuestion);
+        updateFieldNames(newQuestion);
+        container.appendChild(newQuestion);
+    }
+
+    
+
+</script>
+<body>
+    <h1>editor for {{ program.courseName }} interview</h1>
+    <form id="interview-form">
+    <div id="questions-container">
+        {% for question in questions %}
+            <script> addExistingQuestion("{{ question.questionText }}", {{ question.maxTime }}, "{{ question.type }}", "{{ question.answer|default:''}}") </script>
+        {% endfor %}
+        {% if not questions %}
+            <script> addNewQuestion() </script>
+        {% endif %}
+    </div>
+    <button type="button" onclick="addNewQuestion()">Add question</button><br>
+    <button type="button" onclick="exit()">Exit</button>
+    <button type="submit" onclick="submit()">Submit</button>
+    </form>
+</body>
+
+<script>
+    function autoSaveForm() {
+        const formData = new FormData(document.getElementById('interview-form'));
+        fetch(window.location.href, {
+            'method': 'POST',
+            'body': formData
+        });
+    }
+
+    function exit() {
+        autoSaveForm();
+        window.location.href = '/interviewEditor/';
+    }
+
+    function submit() {
+        const formData = new FormData(document.getElementById('interview-form'));
+        fetch(window.location.href, {
+            'method': 'POST',
+            'body': formData,
+            'complete': 'yes'
+        });
+        window.location.href = '/interviewEditor/';
+    }
+
+    document.getElementById('interview-form').addEventListener('input', () => {
+        clearTimeout(window.autosaveTimeout);
+        window.autosaveTimeout = setTimeout(autoSaveForm, 1000);
+    });
+</script>
