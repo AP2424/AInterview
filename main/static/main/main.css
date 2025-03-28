@@ -4,3 +4,162 @@
     border-radius: 300px;
     overflow: hidden;
 }
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #002b36; /* Dark green background */
+    color: #fdf6e3; /* Light text color */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.editor-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #93a1a1; /* Light blue */
+}
+
+.editor-form {
+    width: 80%;
+    max-width: 800px;
+    background-color: #073642; /* Slightly lighter dark green */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.question {
+    background-color: #586e75; /* Muted green */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.question-fieldset {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Remove extra spacing between labels and inputs */
+.question-fieldset label {
+    font-size: 1rem;
+    color: #fdf6e3; /* Light text */
+    display: inline-block;
+    margin-bottom: 5px; /* Add slight spacing below labels */
+    vertical-align: middle;
+}
+
+.question-fieldset input[type="text"],
+.question-fieldset input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #93a1a1; /* Light blue border */
+    border-radius: 5px;
+    background-color: #002b36; /* Dark green background */
+    color: #fdf6e3; /* Light text */
+    margin-top: 5px; /* Add slight spacing above inputs */
+}
+
+.question-fieldset input[type="text"]:disabled {
+    background-color: #586e75; /* Muted green */
+    color: #93a1a1; /* Light blue text */
+    border: 1px dashed #93a1a1; /* Daashed border for distinction */
+    cursor: not-allowed;
+}
+
+.question-fieldset input[type="radio"] {
+    margin-right: 10px;
+    vertical-align: middle; /* Align with text */
+}
+
+.question-fieldset button {
+    background-color: #dc322f; /* Red for delete button */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.question-fieldset button:hover {
+    background-color: #b71c1c; /* Darker red on hover */
+}
+
+/* Align radio buttons and labels horizontally */
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add spacing between radio buttons and labels */
+    margin-top: 10px; /* Add spacing above the radio group */
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.radio-group label {
+    margin: 0; /* Remove extra margin for proper alignment */
+    vertical-align: middle;
+}
+
+/* Buttons */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.add-question-button,
+.exit-button,
+.submit-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-question-button {
+    background-color: #268bd2; /* Light blue */
+    color: white;
+}
+
+.add-question-button:hover {
+    background-color: #0d47a1; /* Darker blue on hover */
+}
+
+.exit-button {
+    background-color: #dc322f; /* Red */
+    color: white;
+}
+
+.exit-button:hover {
+    background-color: #b71c1c; /* Darker red on hover */
+}
+
+.submit-button {
+    background-color: #859900; /* Green */
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #2e7d32; /* Darker green on hover */
+}
