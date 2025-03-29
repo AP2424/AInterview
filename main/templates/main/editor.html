@@ -9,16 +9,23 @@
 <template id="question-template">
     <div class="question">
         <fieldset class="question-fieldset">
-            <label for="question-main">Question: </label><br>
-            <input type="text" id="question-main" name="question[]"><br>
-            <label for="maxtime">Time to answer (s)</label>
-            <input type="number" id="maxtime" name="maxtime[]" value="60"><br>
-            <input type="radio" checked id="factual" name="qtype[]", value="factual">
-            <label for="factual">Factual question</label><br>
-            <input type="radio" id="knowledge" name="qtype[]", value="knowledge">
-            <label for="knowledge">Knowledge question, with answer</label><br>
-            <label for="answer">Answer: </label><br>
-            <input type="text" id="answer" name="answer[]"><br>
+            <label for="question-main">Question:</label>
+            <input type="text" id="question-main" name="question[]">
+            
+            <label for="maxtime">Time to answer (s):</label>
+            <input type="number" id="maxtime" name="maxtime[]" value="60">
+            
+            <div class="radio-group">
+                <input type="radio" checked id="factual" name="qtype[]" value="factual">
+                <label for="factual">Factual question</label>
+                
+                <input type="radio" id="knowledge" name="qtype[]" value="knowledge">
+                <label for="knowledge">Knowledge question, with answer</label>
+            </div>
+            
+            <label for="answer">Answer:</label>
+            <input type="text" id="answer" name="answer[]">
+            
             <button type="button" id="del-button">Delete</button>
         </fieldset>
     </div>
@@ -84,19 +91,21 @@
 
 </script>
 <body>
-    <h1>editor for {{ program.courseName }} interview</h1>
-    <form id="interview-form">
-    <div id="questions-container">
-        {% for question in questions %}
-            <script> addExistingQuestion("{{ question.questionText }}", {{ question.maxTime }}, "{{ question.type }}", "{{ question.answer|default:''}}") </script>
-        {% endfor %}
-        {% if not questions %}
-            <script> addNewQuestion() </script>
-        {% endif %}
-    </div>
-    <button type="button" onclick="addNewQuestion()">Add question</button><br>
-    <button type="button" onclick="exit()">Exit</button>
-    <button type="submit" onclick="submit()">Submit</button>
+    <h1 class="editor-title">Editor for {{ program.courseName }} Interview</h1>
+    <form id="interview-form" class="editor-form">
+        <div id="questions-container" class="questions-container">
+            {% for question in questions %}
+                <script> addExistingQuestion("{{ question.questionText }}", "{{ question.maxTime }}", "{{ question.type }}", "{{ question.answer|default:''}}") </script>
+            {% endfor %}
+            {% if not questions %}
+                <script> addNewQuestion() </script>
+            {% endif %}
+        </div>
+        <div class="button-container">
+            <button type="button" class="add-question-button" onclick="addNewQuestion()">Add Question</button>
+            <button type="button" class="exit-button" onclick="exit()">Exit</button>
+            <button type="submit" class="submit-button" onclick="submit()">Submit</button>
+        </div>
     </form>
 </body>
 

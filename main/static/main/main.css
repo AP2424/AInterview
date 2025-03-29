@@ -8,8 +8,8 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #002b36; /* Dark green background */
-    color: #fdf6e3; /* Light text color */
+    background-color: #e0f7fa; /* Light blue background */
+    color: #004d40; /* Dark teal text for better contrast */
     margin: 0;
     padding: 0;
     display: flex;
@@ -23,16 +23,16 @@ body {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 20px;
-    color: #93a1a1; /* Light blue */
+    color: #006064; /* Slightly darker teal for the title */
 }
 
 .editor-form {
     width: 80%;
     max-width: 800px;
-    background-color: #073642; /* Slightly lighter dark green */
+    background-color: #ffffff; /* White background for the form */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
 .questions-container {
@@ -42,7 +42,7 @@ body {
 }
 
 .question {
-    background-color: #586e75; /* Muted green */
+    background-color: #b2ebf2; /* Light teal for question blocks */
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -58,7 +58,7 @@ body {
 /* Remove extra spacing between labels and inputs */
 .question-fieldset label {
     font-size: 1rem;
-    color: #fdf6e3; /* Light text */
+    color: #004d40; /* Dark teal text */
     display: inline-block;
     margin-bottom: 5px; /* Add slight spacing below labels */
     vertical-align: middle;
@@ -69,17 +69,17 @@ body {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #93a1a1; /* Light blue border */
+    border: 1px solid #80deea; /* Light teal border */
     border-radius: 5px;
-    background-color: #002b36; /* Dark green background */
-    color: #fdf6e3; /* Light text */
+    background-color: #ffffff; /* White background for inputs */
+    color: #004d40; /* Dark teal text */
     margin-top: 5px; /* Add slight spacing above inputs */
 }
 
 .question-fieldset input[type="text"]:disabled {
-    background-color: #586e75; /* Muted green */
-    color: #93a1a1; /* Light blue text */
-    border: 1px dashed #93a1a1; /* Daashed border for distinction */
+    background-color: #e0f2f1; /* Muted teal for disabled fields */
+    color: #004d40; /* Dark teal text */
+    border: 1px dashed #80deea; /* Dashed border for distinction */
     cursor: not-allowed;
 }
 
@@ -89,7 +89,7 @@ body {
 }
 
 .question-fieldset button {
-    background-color: #dc322f; /* Red for delete button */
+    background-color: #ff5252; /* Bright red for delete button */
     color: white;
     border: none;
     padding: 8px 12px;
@@ -99,7 +99,7 @@ body {
 }
 
 .question-fieldset button:hover {
-    background-color: #b71c1c; /* Darker red on hover */
+    background-color: #d32f2f; /* Darker red on hover */
 }
 
 /* Align radio buttons and labels horizontally */
@@ -122,9 +122,10 @@ body {
 
 /* Buttons */
 .button-container {
+    grid-area: buttons;
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
 .add-question-button,
@@ -138,28 +139,109 @@ body {
 }
 
 .add-question-button {
-    background-color: #268bd2; /* Light blue */
+    background-color: #4caf50; /* Green for add button */
     color: white;
 }
 
 .add-question-button:hover {
-    background-color: #0d47a1; /* Darker blue on hover */
+    background-color: #388e3c; /* Darker green on hover */
 }
 
 .exit-button {
-    background-color: #dc322f; /* Red */
+    background-color: #ff5252; /* Bright red for exit button */
     color: white;
 }
 
 .exit-button:hover {
-    background-color: #b71c1c; /* Darker red on hover */
+    background-color: #d32f2f; /* Darker red on hover */
 }
 
 .submit-button {
-    background-color: #859900; /* Green */
+    background-color: #0288d1; /* Blue for submit button */
     color: white;
 }
 
 .submit-button:hover {
-    background-color: #2e7d32; /* Darker green on hover */
+    background-color: #01579b; /* Darker blue on hover */
+}
+
+/* General Page Container */
+.page-container {
+    display: grid;
+    grid-template-areas:
+        "camera title"
+        "camera question"
+        "camera buttons";
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    height: 600px; /* Fixed height for the container */
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #004d40; /* Dark teal border */
+    border-radius: 10px;
+    background-color: #ffffff; /* White background for the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/* Camera Container */
+.camera-container {
+    grid-area: camera;
+    width: 100%;
+    height: 300px;
+    border: 2px solid #004d40; /* Dark teal border */
+    border-radius: 10px; /* Rectangular with rounded corners */
+    overflow: hidden;
+    background-color: #e0f7fa; /* Light blue background */
+}
+
+#camera-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Adjust the video to fit the container */
+}
+
+/* Content Container */
+.content-container {
+    grid-area: title;
+    text-align: left;
+    padding: 10px;
+}
+
+.question-title {
+    font-size: 1.5rem;
+    color: #004d40; /* Dark teal text */
+    margin-bottom: 10px;
+}
+
+.question-text {
+    grid-area: question;
+    font-size: 1.2rem;
+    color: #004d40; /* Dark teal text */
+    margin-top: 0;
+}
+
+.random-button {
+    background-color: #0288d1; /* Blue for buttons */
+    color: white;
+    border: none;
+    width: 120px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 40px; /* Vertically center text */
+}
+
+.random-button:hover {
+    background-color: #01579b; /* Darker blue on hover */
+}
+
+.interview-title {
+    font-size: 2rem;
+    color: #004d40; /* Dark teal text */
+    margin-bottom: 20px;
 }

@@ -5,81 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interview</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
+    <!-- Include React and ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body>
-    <div class="video-mask">
-        <video id="camera" autoplay playsinline></video>
+    <div class="page-container">
+        <div class="camera-container">
+            <video id="camera-feed" autoplay></video>
+        </div>
+        <div class="content-container">
+            <!-- React root element for the QuestionDisplay component -->
+            <div id="question-root"></div>
+        </div>
+        <div class="button-container">
+            <button class="random-button">Button 1</button>
+            <button class="random-button">Button 2</button>
+            <button class="random-button">Button 3</button>
+        </div>
     </div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
-<script>
-    const video = document.getElementById('camera');
-    let mediaRecorder;
-    let proctorModel;
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-            video.srcObject = stream;
-            mediaRecorder = new MediaRecorder(stream);
-     
-     });
+    <!-- Load TensorFlow.js and BlazeFace before your custom script -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
 
-    /*const proctorModel = faceLandmarksDetection.load(
-        faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
-    );*/
-    async function loadModel() {
-        proctorModel = await blazeface.load();
-    }
+    <script>
+        // Access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then((stream) => {
+                const video = document.getElementById('camera-feed');
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error("Error accessing the camera:", error);
+            });
 
-    loadModel();
+        let proctorModel;
 
-    async function checkCamera() {
-        const predictions = await proctorModel.estimateFaces(video, false);
-        if (predictions.length === 0) {
-            alert("Face not detected, you should be visible!");
-        } else {
-            console.log(predictions[0].annotations);
-            const eyes = predictions[0].annotations.leftEyeUpper0.concat(predictions[0].annotations.rightEyeUpper0);
-            const avgEyeY = eyes.reduce((sum, p) => sum + p[1], 0) / eyes.length;
-            if (avgEyeY < 200) {
-                alert("keep your eyes on the screen!");
+        async function loadModel() {
+            try {
+                proctorModel = await blazeface.load();
+                console.log("BlazeFace model loaded successfully.");
+            } catch (error) {
+                console.error("Error loading BlazeFace model:", error);
             }
         }
-    }
-    setInterval(checkCamera, 3000);
 
-    let violationCount = 0;
-    const MINHEIGHT=600;
-    const MINWIDTH=800;
+        loadModel();
 
-    function apply_penalties() {
-        if (violationCount > 1) {
-                alert("Repeated rules violation. You are disqualified");
-            } 
-            else {
-                alert("You are not allowed to exit the interview page! One more time and you are disqualified");
+        async function checkCamera() {
+            const video = document.getElementById('camera-feed');
+            if (!proctorModel) {
+                console.error("BlazeFace model is not loaded yet.");
+                return;
             }
-    }
 
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
+            const predictions = await proctorModel.estimateFaces(video, false);
+            if (predictions.length === 0) {
+                //alert("Face not detected, you should be visible!");
+            } else {
+                console.log(predictions[0].annotations);
+            }
+        }
+
+        setInterval(checkCamera, 3000);
+
+        let violationCount = 0;
+        const MINHEIGHT = 600;
+        const MINWIDTH = 800;
+
+        function apply_penalties() {
+            if (violationCount > 1) {
+                //alert("Repeated rules violation. You are disqualified");
+            } else {
+                //alert("You are not allowed to exit the interview page! One more time and you are disqualified");
+            }
+        }
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                violationCount++;
+                if (violationCount > 1) {
+                    apply_penalties();
+                }
+            }
+        });
+
+        document.addEventListener('blur', function () {
             violationCount++;
             if (violationCount > 1) {
                 apply_penalties();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < MINWIDTH || window.innerHeight < MINHEIGHT) {
+                violationCount++;
+                apply_penalties();
+            }
+        });
+    </script>
+
+    <script type="text/babel">
+        // Ensure questions are passed correctly from Django
+        const questions = JSON.parse('{{ questions|escapejs }}'); // Safely pass questions from Django context
+
+        function QuestionDisplay() {
+            const [currentIndex, setCurrentIndex] = React.useState(0);
+
+            const handleNext = () => {
+                if (currentIndex < questions.length - 1) {
+                    setCurrentIndex(currentIndex + 1);
+                } else {
+                    alert("End of questions!");
+                }
+            };
+
+            return (
+                <div>
+                    <h2>Question {currentIndex + 1}</h2>
+                    <p>{questions[currentIndex].fields.questionText}</p>
+                    <button onClick={handleNext}>Next Question</button>
+                </div>
+            );
         }
-    }});
 
-    document.addEventListener('blur', function() {
-        violationCount++;
-        if (violationCount > 1) {
-            apply_penalties();
-    }});
-
-    window.addEventListener('resize', () => {
-    if (window.innerWidth < MINWIDTH || window.innerHeight < MINHEIGHT) {
-        violationCount++;
-        apply_penalties();
-    }
-});
-</script>
+        // Render the React component
+        ReactDOM.render(<QuestionDisplay />, document.getElementById('question-root'));
+    </script>
+</body>
+</html>

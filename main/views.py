@@ -2,6 +2,7 @@ from asyncio.windows_events import NULL
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.core.serializers import serialize
 from .models import StudyProgram, InterviewModel, Question
 
 def CoursesMain(request):
@@ -58,5 +59,6 @@ def applicantDashboard(request):
 def interview(request, pk):
     program = StudyProgram.objects.get(id=pk)
     model = InterviewModel.objects.get(studyProgram=program)
-    questions = model.questionsList.all()
-    return render(request, 'main/interview.html', context={'questions': questions})
+    questions = Question.objects.filter(model=model).order_by('position')
+    serialized_questions = serialize('json', questions)
+    return render(request, 'main/interview.html', context={'questions': serialized_questions})
