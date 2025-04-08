@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-from .models import StudyProgram, InterviewModel, Question
+from .models import StudyProgram, InterviewModel, Question, User
 
 def CoursesMain(request):
     programs = StudyProgram.objects.all()
@@ -65,6 +65,14 @@ def interview(request, pk):
     serialized_questions = serialize('json', questions)
     return render(request, 'main/interview.html', context={'questions': serialized_questions})
 
+def start_interview(request, pk):
+    program = StudyProgram.objects.get(id=pk)
+    model = InterviewModel.objects.get(studyProgram=program)
+    questions = Question.objects.filter(model=model)
+    time = round(sum(question.maxTime/60 for question in questions) + 5) # introduction minutes
+    return render(request, 'main/start_interview.html', context={'program': program, 'questions_num': questions.count(),
+                                                                 'time': time})
+
 def loginmain(request):
     return render(request, 'main/loginmain.html')
 
@@ -73,9 +81,10 @@ def student_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user is not None and user.role == 'student':
+        print(user)
+        if user is not None and user.role == 'applicant':
             login(request, user)
-            return HttpResponseRedirect(reverse('dashboard'))
+            return HttpResponseRedirect(reverse('start-interview', args=[user.applicant.studyProgram.id]))
         else:
             return render(request, 'main/studentlogin.html', {'error': 'Invalid credentials'})
     return render(request, 'main/studentlogin.html')
@@ -83,11 +92,12 @@ def student_login(request):
 def committee_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        secret_key = request.POST.get('password')
-        user = authenticate(request, username=username, password=secret_key)
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        print(user)
         if user is not None and user.role == 'commitee':
             login(request, user)
-            return HttpResponseRedirect(reverse('dashboard'))
+            return HttpResponseRedirect(reverse('interviewEditor'))
         else:
             return render(request, 'main/committeelogin.html', {'error': 'Invalid credentials'})
     return render(request, 'main/committeelogin.html')

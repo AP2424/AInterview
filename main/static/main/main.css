@@ -1,17 +1,10 @@
-.video-mask {
-    width: 400px;
-    height: 400px;
-    border-radius: 300px;
-    overflow: hidden;
-}
-
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #e0f7fa; /* Light blue background */
     color: #004d40; /* Dark teal text for better contrast */
     margin: 0;
-    padding: 0;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,20 +12,22 @@ body {
     min-height: 100vh;
 }
 
+/* Editor Styles */
 .editor-title {
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #006064; /* Slightly darker teal for the title */
+    color: #004d40;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .editor-form {
     width: 80%;
     max-width: 800px;
-    background-color: #ffffff; /* White background for the form */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 }
 
 .questions-container {
@@ -42,10 +37,10 @@ body {
 }
 
 .question {
-    background-color: #b2ebf2; /* Light teal for question blocks */
+    background-color: #ffffff;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #004d40;
 }
 
 .question-fieldset {
@@ -55,13 +50,10 @@ body {
     gap: 10px;
 }
 
-/* Remove extra spacing between labels and inputs */
 .question-fieldset label {
     font-size: 1rem;
-    color: #004d40; /* Dark teal text */
-    display: inline-block;
-    margin-bottom: 5px; /* Add slight spacing below labels */
-    vertical-align: middle;
+    color: #004d40;
+    margin-bottom: 5px;
 }
 
 .question-fieldset input[type="text"],
@@ -69,11 +61,9 @@ body {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
-    border: 1px solid #80deea; /* Light teal border */
+    border: 1px solid #004d40;
     border-radius: 5px;
-    background-color: #ffffff; /* White background for inputs */
-    color: #004d40; /* Dark teal text */
-    margin-top: 5px; /* Add slight spacing above inputs */
+    color: #004d40;
 }
 
 .question-fieldset input[type="text"]:disabled {
@@ -88,68 +78,67 @@ body {
     vertical-align: middle; /* Align with text */
 }
 
-.question-fieldset button {
-    background-color: #ff5252; /* Bright red for delete button */
+#del-button {
+    background-color: #ff5252;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9rem;
+    align-self: flex-end;
 }
 
-.question-fieldset button:hover {
-    background-color: #d32f2f; /* Darker red on hover */
-}
-
-/* Align radio buttons and labels horizontally */
 .radio-group {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 10px; /* Add spacing between radio buttons and labels */
-    margin-top: 10px; /* Add spacing above the radio group */
+    gap: 10px;
+    margin: 10px 0;
 }
 
 .radio-group input[type="radio"] {
-    margin-right: 5px;
-    vertical-align: middle;
+    margin: 0;
+    width: auto;
 }
 
 .radio-group label {
-    margin: 0; /* Remove extra margin for proper alignment */
-    vertical-align: middle;
+    margin: 0;
+    padding-right: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Add this new style for the radio button container */
+.radio-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 /* Buttons */
-.button-container {
-    grid-area: buttons;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.add-question-button,
-.exit-button,
-.submit-button {
-    padding: 10px 20px;
-    font-size: 1rem;
+.add-question-button {
+    background-color: #004d40;
+    color: white;
     border: none;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.add-question-button {
-    background-color: #4caf50; /* Green for add button */
-    color: white;
+    transition: background-color 0.3s ease;
 }
 
 .add-question-button:hover {
-    background-color: #388e3c; /* Darker green on hover */
+    background-color: #00695c;
 }
 
 .exit-button {
-    background-color: #ff5252; /* Bright red for exit button */
+    background-color: #ff5252;
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .exit-button:hover {
@@ -157,12 +146,17 @@ body {
 }
 
 .submit-button {
-    background-color: #0288d1; /* Blue for submit button */
+    background-color: #004d40;
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-    background-color: #01579b; /* Darker blue on hover */
+    background-color: #00695c;
 }
 
 /* General Page Container */
@@ -186,21 +180,41 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
-/* Camera Container */
+/* Camera and Timer Styles */
 .camera-container {
-    grid-area: camera;
-    width: 100%;
-    height: 300px;
-    border: 2px solid #004d40; /* Dark teal border */
-    border-radius: 10px; /* Rectangular with rounded corners */
-    overflow: hidden;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    overflow: visible;
+    border-radius: 50%;
+    border: 3px solid #004d40;
+    margin-bottom: 60px;
     background-color: #e0f7fa; /* Light blue background */
+    grid-area: camera;
+    justify-self: center;
+    align-self: start;
 }
 
 #camera-feed {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Adjust the video to fit the container */
+    object-fit: cover;
+    border-radius: 50%; /* Make sure video follows container's rounded shape */
+}
+
+.timer {
+    position: absolute;
+    bottom: -40px; /* Moved further down */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #004d40;
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent text wrapping */
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Content Container */
@@ -274,16 +288,6 @@ body {
     background-color: #00332e; /* Slightly darker green on hover */
 }
 
-/* Login Page Styles */
-.login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* Full viewport height */
-    background-color: #e0f7fa; /* Light blue background */
-}
-
 .login-container h1 {
     font-size: 2rem;
     color: #004d40; /* Dark green text */
@@ -326,4 +330,113 @@ form .login-button:hover {
     color: red;
     font-size: 1rem;
     margin-bottom: 10px;
+}
+
+/* Programs page styles */
+.programs-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    text-align: center;
+    color: #004d40;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.program-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+}
+
+.program-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 2px solid #004d40;
+}
+
+.program-content {
+    padding: 1.5rem;
+}
+
+.program-title {
+    color: #004d40;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.program-details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    font-size: 0.9rem;
+    color: #00695c;
+}
+
+.program-details li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.2;
+    display: flex;
+    align-items: flex-start;
+}
+
+.program-details li:before {
+    content: "•";
+    position: absolute;
+    left: 0.5rem;
+    color: #004d40;
+}
+
+.edit-button {
+    display: block;
+    background-color: #004d40;
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.edit-button:hover {
+    background-color: #00695c;
+}
+
+/* Next Question Button Style */
+#question-root button {
+    background-color: #004d40;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#question-root button:hover {
+    background-color: #00695c;
 }

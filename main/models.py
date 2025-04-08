@@ -2,12 +2,19 @@ from datetime import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.hashers import make_password
 
 class User(AbstractUser):
     ROLE_CHOICES = (
         ('applicant', 'Applicant'),
         ('commitee', 'Commitee Member'))
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding or not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
 
 class StudyProgram(models.Model):
     STUDYLEVEL_CHOICES = (

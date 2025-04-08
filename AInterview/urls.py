@@ -1,7 +1,9 @@
 import django
 from django.contrib import admin
 from django.urls import path
-from main.views import CoursesMain, editor, applicantDashboard, interview, loginmain, student_login, committee_login
+from main.views import CoursesMain, editor, applicantDashboard, interview, loginmain, student_login, committee_login, start_interview
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -11,5 +13,8 @@ urlpatterns = [
     path('interviewEditor/', CoursesMain, name='courses'),
     path('interviewEditor/<str:code>/', editor, name='editor'),
     path('applicant/', applicantDashboard, name='dashboard'),
-    path('interview/<int:pk>/', interview, name='interview')
+    path('interview/<int:pk>/', interview, name='interview'),
+    path('interview/<int:pk>/start/', start_interview, name='start-interview'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -7,11 +7,26 @@
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
 </head>
 <body>
-    {% for program in programs %}
-        <div class="program-container">
-            {{ program.courseName }}
-            <a href="{% url 'editor' program.courseCode %}">
-            <button>Interview</button></a>
+    <div class="programs-page">
+        <h1 class="page-title">Study Programs</h1>
+        <div class="programs-grid">
+            {% for program in programs %}
+                <div class="program-card">
+                    <img src="{{ program.coursePicture.url }}" class="program-image" alt="{{ program.courseName }}">
+                    <div class="program-content">
+                        <h2 class="program-title">{{ program.courseName }}</h2>
+                        <ul class="program-details">
+                            <li>Academic level: {{ program.studyLevel }}</li>
+                            <li>Language: {{ program.courseLanguage }}</li>
+                            <li>Available Places: {{ program.numberOfPlaces }}</li>
+                        </ul>
+                        <a href="{% url 'editor' program.courseCode %}" class="edit-button">
+                            Edit Interview Template
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 </body>
+</html>

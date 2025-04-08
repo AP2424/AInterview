@@ -1,0 +1,24 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programs</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+
+<div class="program-card">
+    <img src="{{ program.coursePicture.url }}" class="program-image" alt="{{ program.courseName }}">
+    <div class="program-content">
+        <h2 class="program-title">{{ program.courseName }} ({{ program.studyLevel }})</h2>
+        <ul class="program-details">
+            <li>Number of questions: {{ questions_num }}</li>
+            <li>Estimated time: {{ time }} minutes</li>
+        </ul>
+        <a href="{% url 'interview' program.id %}" class="edit-button">
+            Start Interview
+        </a>
+    </div>
+</div>
+</body>
