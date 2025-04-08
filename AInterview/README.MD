@@ -38,7 +38,12 @@ The setup script automatically:
 - Sets up the database
 - Applies all migrations
 
-3. **Access the Application**
+3. **Start the Django development server**
+```powershell
+python manage.py runserver
+```
+
+4. **Access the Application**
 ```
 http://localhost:8000
 ```
