@@ -1,8 +1,10 @@
 from asyncio.windows_events import NULL
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
+from django.contrib.auth import authenticate, login
+from django.urls import reverse
 from .models import StudyProgram, InterviewModel, Question
 
 def CoursesMain(request):
@@ -62,3 +64,30 @@ def interview(request, pk):
     questions = Question.objects.filter(model=model).order_by('position')
     serialized_questions = serialize('json', questions)
     return render(request, 'main/interview.html', context={'questions': serialized_questions})
+
+def loginmain(request):
+    return render(request, 'main/loginmain.html')
+
+def student_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.role == 'student':
+            login(request, user)
+            return HttpResponseRedirect(reverse('dashboard'))
+        else:
+            return render(request, 'main/studentlogin.html', {'error': 'Invalid credentials'})
+    return render(request, 'main/studentlogin.html')
+
+def committee_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        secret_key = request.POST.get('password')
+        user = authenticate(request, username=username, password=secret_key)
+        if user is not None and user.role == 'commitee':
+            login(request, user)
+            return HttpResponseRedirect(reverse('dashboard'))
+        else:
+            return render(request, 'main/committeelogin.html', {'error': 'Invalid credentials'})
+    return render(request, 'main/committeelogin.html')

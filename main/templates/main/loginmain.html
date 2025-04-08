@@ -1,0 +1,15 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <a href="{% url 'student-login' %}"><button class="login-button">Student Login</button></a>
+        <a href="{% url 'committee-login' %}"><button class="login-button">Administrative Login</button></a>
+    </div>
+</body>
+</html>

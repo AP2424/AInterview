@@ -10,10 +10,18 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
 class StudyProgram(models.Model):
+    STUDYLEVEL_CHOICES = (
+        ('bachelor', 'Bachelor'),
+        ('master', 'Master'),
+        ('phd', 'PhD'))
+    
     courseName = models.CharField(max_length=50)
     courseCode = models.CharField(max_length=10, unique=True)
+    studyLevel = models.CharField(max_length=10, choices=STUDYLEVEL_CHOICES)
+    courseDescription = models.TextField()
+    courseLanguage = models.CharField(max_length=5)
     numberOfPlaces = models.IntegerField(default=0)
-    
+    coursePicture = models.ImageField(upload_to='course_pictures/', null=True, blank=True)
     def __str__(self):
         return f'{self.courseName}({self.courseCode})'
 
@@ -23,6 +31,7 @@ class Applicant(models.Model):
     surname = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     studyProgram = models.ForeignKey(StudyProgram, on_delete=models.SET_NULL, null=True)
+    profilePicture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     
 class InterviewModel(models.Model):
     STATUS_CHOICES = (
