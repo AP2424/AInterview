@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
 </head>
 <body>
-
+<div display="inline">
+  <a href="{% url 'profile' %}">Profile</a>
+  <a>Logout</a>
+</div>
 <div class="program-card">
+    
     <img src="{{ program.coursePicture.url }}" class="program-image" alt="{{ program.courseName }}">
     <div class="program-content">
         <h2 class="program-title">{{ program.courseName }} ({{ program.studyLevel }})</h2>

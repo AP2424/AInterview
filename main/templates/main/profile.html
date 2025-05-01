@@ -1,0 +1,28 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="profile-container">
+        <h1 class="profile-title">Applicant Profile</h1>
+        <div class="profile-card">
+            <div class="profile-image-container">
+                <img src="{{ applicant.profilePicture.url }}" class="profile-image" alt="Profile Picture">
+            </div>
+            <div class="profile-details">
+                <h2 class="profile-name">{{ applicant.name }} {{ applicant.surname }}</h2>
+                <ul class="profile-info">
+                    <li><strong>Username:</strong> {{ applicant.user.username }}</li>
+                    <li><strong>Email:</strong> {{ applicant.user.email }}</li>
+                    <li><strong>Program:</strong> {{ applicant.studyProgram.name }}</li>
+                    <li><strong>Level:</strong> {{ applicant.studyProgram.studyLevel }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

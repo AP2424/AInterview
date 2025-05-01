@@ -101,3 +101,7 @@ def committee_login(request):
         else:
             return render(request, 'main/committeelogin.html', {'error': 'Invalid credentials'})
     return render(request, 'main/committeelogin.html')
+
+def profile(request):
+    user = User.objects.get(username=request.user.username)
+    return render(request, 'main/profile.html', context={'applicant': user.applicant})
