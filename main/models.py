@@ -36,7 +36,7 @@ class StudyProgram(models.Model):
 class Applicant(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='applicant')
     studyProgram = models.ForeignKey(StudyProgram, on_delete=models.SET_NULL, null=True)
     profilePicture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     
@@ -64,9 +64,13 @@ class Question(models.Model):
   
 
 class ConductedInterview(models.Model):
+    STATUS_CHOICES = (
+        ('complete', 'Complete'),
+        ('in progress', 'In Progress'),)
     questions = models.ForeignKey(InterviewModel, on_delete=models.SET_NULL, null=True)
     applicant = models.ForeignKey(Applicant, on_delete=models.SET_NULL, null=True)
     startTime = models.DateTimeField(default=datetime.now)
     endTime = models.DateTimeField(default=datetime.now)
     recording = models.FileField(upload_to='videos/')
-    score = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)]) # in a range from 0 to 10
+    score = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0.0) # in a range from 0 to 10
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='in progress')

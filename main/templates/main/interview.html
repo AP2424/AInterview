@@ -14,8 +14,8 @@
     <div class="page-container">
         <div class="camera-container">
             <video id="camera-feed" autoplay></video>
-            <div class="timer">Time left: <span id="time-left">60</span></div>
         </div>
+        <div id="penalty-message" class="penalty-message"></div>
         <div class="content-container">
             <!-- React root element for the QuestionDisplay component -->
             <div id="question-root"></div>
@@ -73,10 +73,11 @@
         const MINWIDTH = 800;
 
         function apply_penalties() {
+            const penaltyElement = document.getElementById('penalty-message');
             if (violationCount > 1) {
-                //alert("Repeated rules violation. You are disqualified");
+                penaltyElement.textContent = "Repeated rules violation. You are disqualified";
             } else {
-                //alert("You are not allowed to exit the interview page! One more time and you are disqualified");
+                penaltyElement.textContent = "You are not allowed to exit the interview page! One more time and you are disqualified";
             }
         }
 
@@ -108,28 +109,327 @@
         // Ensure questions are passed correctly from Django
         const questions = JSON.parse('{{ questions|escapejs }}'); // Safely pass questions from Django context
 
-        function QuestionDisplay() {
-            const [currentIndex, setCurrentIndex] = React.useState(0);
+        function QuestionPreparation({ question, onComplete }) {
+            const [prepTimeLeft, setPrepTimeLeft] = React.useState(30);
 
-            const handleNext = () => {
-                if (currentIndex < questions.length - 1) {
-                    setCurrentIndex(currentIndex + 1);
-                } else {
-                    alert("End of questions!");
-                }
-            };
+            React.useEffect(() => {
+                const timer = setInterval(() => {
+                    setPrepTimeLeft((prevTime) => {
+                        if (prevTime <= 1) {
+                            clearInterval(timer);
+                            onComplete();
+                            return 0;
+                        }
+                        return prevTime - 1;
+                    });
+                }, 1000);
+
+                return () => clearInterval(timer);
+            }, []);
 
             return (
-                <div>
-                    <h2>Question {currentIndex + 1}</h2>
-                    <p>{questions[currentIndex].fields.questionText}</p>
-                    <button onClick={handleNext}>Next Question</button>
+                <div className="question-container">
+                    <div className="timer-display">
+                        Preparation time: {prepTimeLeft} seconds
+                    </div>
+                    <h2>Prepare for Question</h2>
+                    <div className="preparation-content">
+                        <p className="next-question">{question}</p>
+                        <p className="prep-instruction">Take this time to:</p>
+                        <ul>
+                            <li>Read and understand the question</li>
+                            <li>Organize your thoughts</li>
+                            <li>Plan your answer</li>
+                        </ul>
+                    </div>
+                    <button 
+                        onClick={onComplete}
+                        className="ready-button"
+                    >
+                        Ready to Answer
+                    </button>
                 </div>
             );
         }
 
+        function QuestionDisplay() {
+            const [currentIndex, setCurrentIndex] = React.useState(0);
+            const [timeLeft, setTimeLeft] = React.useState(questions[0].fields.maxTime);
+            const [isPreparation, setIsPreparation] = React.useState(true);
+            const [mediaRecorder, setMediaRecorder] = React.useState(null);
+            const [recordedChunks, setRecordedChunks] = React.useState([]);
+            const [recording, setRecording] = React.useState(false);
+
+            // Set up recording once at component mount
+            React.useEffect(() => {
+                async function setupRecording() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: true, 
+                            audio: true 
+                        });
+
+                        const supportedMimeTypes = [
+                            'video/webm;codecs=vp9,opus',
+                            'video/webm;codecs=vp8,opus',
+                            'video/webm'
+                        ];
+
+                        let mimeType = supportedMimeTypes.find(type => MediaRecorder.isTypeSupported(type));
+                        
+                        if (!mimeType) throw new Error('No supported MIME types found');
+                        
+                        console.log('Using MIME type:', mimeType);
+
+                        const recorder = new MediaRecorder(stream, {
+                            mimeType: mimeType,
+                            videoBitsPerSecond: 2500000
+                        });
+                        
+                        recorder.ondataavailable = (event) => {
+                            if (event.data && event.data.size > 0) {
+                                setRecordedChunks(prev => [...prev, event.data]);
+                            }
+                        };
+
+                        setMediaRecorder(recorder);
+                        // Start recording immediately and keep it running
+                        recorder.start(1000);
+                        setRecording(true);
+                        console.log('Started continuous recording');
+                    } catch (error) {
+                        console.error("Error setting up recording:", error);
+                    }
+                }
+                setupRecording();
+
+                // Cleanup function
+                return () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        setRecording(false);
+                    }
+                };
+            }, []);
+
+            // Remove the recording control effect as we're now recording continuously
+
+            // Handle question timer
+            React.useEffect(() => {
+                if (isPreparation) {
+                    return; // Don't start the timer during preparation
+                }
+
+                // Set the timer for the current question
+                setTimeLeft(questions[currentIndex].fields.maxTime);
+                
+                const timer = setInterval(() => {
+                    setTimeLeft(prevTime => {
+                        if (prevTime <= 1) {
+                            clearInterval(timer);
+                            handleTimeUp();
+                            return 0;
+                        }
+                        return prevTime - 1;
+                    });
+                }, 1000);
+
+                // Cleanup timer
+                return () => clearInterval(timer);
+            }, [currentIndex, isPreparation]);
+
+            const handleTimeUp = async () => {
+                if (currentIndex < questions.length - 1) {
+                    setCurrentIndex(prevIndex => prevIndex + 1);
+                    setIsPreparation(true);
+                } else {
+                    // Only stop recording at the very end
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        setRecording(false);
+                    }
+                    await saveRecording();
+                    window.location.href = '/dashboard/';
+                }
+            };
+
+            const handleNextQuestion = async () => {
+                if (currentIndex < questions.length - 1) {
+                    setCurrentIndex(prevIndex => prevIndex + 1);
+                    setIsPreparation(true);
+                } else {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        setRecording(false);
+                    }
+                    await saveRecording();
+                    alert("End of interview!");
+                    window.location.href = '/dashboard/';
+                }
+            };
+
+            const saveRecording = async () => {
+                // Ensure we have all data
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.requestData();
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    mediaRecorder.stop();
+                }
+
+                // Wait for final data
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                const blob = new Blob(recordedChunks, {
+                    type: mediaRecorder.mimeType
+                });
+                
+                console.log('Final recording size:', blob.size);
+                
+                const formData = new FormData();
+                formData.append('video', blob, 'interview.webm');
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                formData.append('end_time', new Date().toISOString());
+                
+                try {
+                    const response = await fetch('/save-recording/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to save recording');
+                    console.log('Recording saved successfully');
+                } catch (error) {
+                    console.error('Error saving recording:', error);
+                }
+            };
+
+            const handlePreparationComplete = () => {
+                setIsPreparation(false);
+            };
+
+            if (isPreparation) {
+                return (
+                    <QuestionPreparation 
+                        question={questions[currentIndex].fields.questionText}
+                        onComplete={handlePreparationComplete}
+                    />
+                );
+            }
+
+            return (
+                <div className="question-container">
+                    <div className="timer-display">
+                        Time left: {timeLeft} seconds
+                    </div>
+                    <h2>Question {currentIndex + 1}</h2>
+                    <p>{questions[currentIndex].fields.questionText}</p>
+                    <button 
+                        onClick={handleNextQuestion}
+                        className="ready-button"
+                    >
+                        Finish answering
+                    </button>
+                </div>
+            );
+        }
+
+        function PreparationDisplay({ onStart }) {
+            const [faceVisible, setFaceVisible] = React.useState(false);
+            const [isFullScreen, setIsFullScreen] = React.useState(
+                window.innerWidth >= MINWIDTH && window.innerHeight >= MINHEIGHT
+            );
+
+            React.useEffect(() => {
+                // Update face detection status
+                async function updateFaceStatus() {
+                    const video = document.getElementById('camera-feed');
+                    if (!proctorModel) return;
+                    
+                    const predictions = await proctorModel.estimateFaces(video, false);
+                    setFaceVisible(predictions.length > 0);
+                }
+
+                const faceCheckInterval = setInterval(updateFaceStatus, 1000);
+
+                // Update full screen status
+                const handleResize = () => {
+                    setIsFullScreen(
+                        window.innerWidth >= MINWIDTH && window.innerHeight >= MINHEIGHT
+                    );
+                };
+                window.addEventListener('resize', handleResize);
+
+                return () => {
+                    clearInterval(faceCheckInterval);
+                    window.removeEventListener('resize', handleResize);
+                };
+            }, []);
+
+            const getStatusStyle = (isOk) => ({
+                color: isOk ? '#4caf50' : '#f44336',
+                fontWeight: 'bold'
+            });
+
+            return (
+                <div className="question-container">
+                    <h2>Interview Preparation</h2>
+                    <div className="status-indicators">
+                        <div className="status-item">
+                            Face Detection: <span style={getStatusStyle(faceVisible)}>
+                                {faceVisible ? 'Yes' : 'No'}
+                            </span>
+                        </div>
+                        <div className="status-item">
+                            Full Screen: <span style={getStatusStyle(isFullScreen)}>
+                                {isFullScreen ? 'Yes' : 'No'}
+                            </span>
+                        </div>
+                    </div>
+                    <p>Please ensure:</p>
+                    <ul>
+                        <li>Your face is clearly visible in the camera</li>
+                        <li>The window is in full screen mode</li>
+                        <li>You have a stable internet connection</li>
+                        <li>You are in a quiet environment</li>
+                    </ul>
+                    <button 
+                        onClick={onStart}
+                        disabled={!faceVisible || !isFullScreen}
+                        className="start-button"
+                    >
+                        Start Interview
+                    </button>
+                </div>
+            );
+        }
+
+        function InterviewApp() {
+            const [isPreparation, setIsPreparation] = React.useState(true);
+            const handleStartInterview = () => {
+        // Send start time when interview begins
+                const formData = new FormData();
+                formData.append('start_time', new Date().toISOString());
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                
+                fetch('/save-start-time/', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to save start time');
+                    setIsPreparation(false);
+                })
+                .catch(error => console.error('Error saving start time:', error));
+            };
+            return isPreparation ? (
+                <PreparationDisplay onStart={handleStartInterview} />
+            ) : (
+                <QuestionDisplay />
+            );
+        }
+
         // Render the React component
-        ReactDOM.render(<QuestionDisplay />, document.getElementById('question-root'));
+        ReactDOM.render(<InterviewApp />, document.getElementById('question-root'));
     </script>
 </body>
 </html>

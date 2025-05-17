@@ -514,3 +514,270 @@ body {
     font-family: Arial, sans-serif;
     min-height: 100vh;
 }
+
+.question-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.timer-display {
+    font-size: 1.2rem;
+    color: #004d40;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.status-indicators {
+    background: white;
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-item {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.start-button {
+    display: block;  /* Changed from inline-block */
+    background-color: #004d40;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 200px;  /* Added max-width */
+    margin: 0 auto;    /* Added auto margins */
+}
+
+.start-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.start-button:hover:not(:disabled) {
+    background-color: #00695c;
+}
+
+.preparation-content {
+    background: #e0f7fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.next-question {
+    font-size: 1.2rem;
+    color: #004d40;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+
+.prep-instruction {
+    color: #00695c;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.preparation-content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.preparation-content li {
+    color: #00695c;
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.preparation-content li:before {
+    content: "•";
+    position: absolute;
+    left: 0.5rem;
+    color: #004d40;
+}
+
+.ready-button {
+    background-color: #004d40;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: 1rem auto 0;
+}
+
+.ready-button:hover {
+    background-color: #00695c;
+}
+
+.penalty-message {
+    color: #f44336;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    min-height: 2rem;
+}
+
+.interview-status {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    max-width: 200px;  /* Added max-width */
+    margin: 0 auto;    /* Added auto margins */
+}
+
+.interview-status.completed {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-icon {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.start-button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.program-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-title {
+    text-align: center;
+    color: #004d40;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.program-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+}
+
+.program-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.program-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.program-content {
+    padding: 1.5rem;
+}
+
+.program-title {
+    color: #004d40;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.program-details {
+    margin-bottom: 1.5rem;
+}
+
+.program-level, .program-code {
+    color: #00695c;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.program-description {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.start-button {
+    display: inline-block;
+    background-color: #004d40;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.start-button:hover {
+    background-color: #00695c;
+}
+
+.start-button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.interview-status.completed {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-icon {
+    margin-right: 8px;
+}

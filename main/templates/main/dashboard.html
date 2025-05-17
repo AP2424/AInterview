@@ -1,17 +1,46 @@
 {% load static %}
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programs</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
 </head>
 <body>
-    {% for program in programs %}
-        <div class="program-container">
-            {{ program.courseName }}
-            <a href="{% url 'interview' program.id %}">
-            <button>Proceed</button></a>
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">Available Programs</h1>
+        <div class="programs-grid">
+            {% for program in programs %}
+            <div class="program-card">
+                <div class="program-image">
+                    {% if program.coursePicture %}
+                        <img src="{{ program.coursePicture.url }}" alt="{{ program.courseName }}">
+                    {% else %}
+                        <img src="{% static 'main/default-course.png' %}" alt="Default course image">
+                    {% endif %}
+                </div>
+                <div class="program-content">
+                    <h2 class="program-title">{{ program.courseName }}</h2>
+                    <div class="program-details">
+                        <p class="program-level">Level: {{ program.get_studyLevel_display }}</p>
+                        <p class="program-code">Code: {{ program.courseCode }}</p>
+                        <p class="program-description">{{ program.courseDescription }}</p>
+                    </div>
+                    
+                    {% if program.id in completed_interviews %}
+                        <div class="interview-status completed">
+                            <span class="status-icon">✓</span>
+                            Interview Completed
+                        </div>
+                    {% else %}
+                        <a href="{% url 'start-interview' program.id %}" 
+                           class="start-button {% if program.id in completed_interviews %}disabled{% endif %}"
+                           {% if program.id in completed_interviews %}disabled{% endif %}>
+                            Take an interview
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 </body>
+</html>
