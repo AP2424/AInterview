@@ -1,7 +1,6 @@
 from asyncio.windows_events import NULL
 import datetime
 import json
-import requests
 from django.contrib.auth import login
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponseRedirect
@@ -10,16 +9,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-from django.core.files import File
 from django.core.files.base import ContentFile
 from .models import ConductedInterview, InterviewAnswer
 from .models import StudyProgram, InterviewModel, Question, User, Applicant
 from .forms import ApplicantRegistrationForm
-from huggingface_hub import InferenceClient
 from together import Together
 import whisper
 import re
-from pathlib import Path
 from dotenv import load_dotenv
 import os
 from django.conf import settings
@@ -264,7 +260,7 @@ def save_audio_chunk(request):
                 client = InferenceClient(
                     provider="hf-inference",
                     model="openai/whisper-large-v3-turbo", 
-                    token=HF_API_KEY,
+                    token=,
                     headers={"Content-type": "audio/webm"}
                 )
                 # Pass the binary audio data directly
