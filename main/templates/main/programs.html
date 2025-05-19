@@ -9,6 +9,9 @@
 <body>
     <div class="programs-page">
         <h1 class="page-title">Study Programs</h1>
+        <a href="{% url 'ranking'  %}" class="view-recording-btn">
+                                Open Interview Rankings
+        </a>
         <div class="programs-grid">
             {% for program in programs %}
                 <div class="program-card">

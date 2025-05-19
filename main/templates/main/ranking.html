@@ -1,0 +1,40 @@
+{% load static %}
+<html>
+<head>
+    <title>Interview Rankings</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="ranking-container">
+        <h1 class="ranking-title">Interview Rankings</h1>
+        <div class="ranking-table-container">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Applicant Name</th>
+                        <th>Study Program</th>
+                        <th>Overall Score</th>
+                        <th>Interview details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interview in interviews %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ interview.applicant.name }} {{ interview.applicant.surname }}</td>
+                        <td>{{ interview.questions.studyProgram.courseName }}</td>
+                        <td>{{ interview.score|floatformat:1 }}/10</td>
+                        <td>
+                            <a href="{% url 'score-breakdown' interview.id %}" class="view-recording-btn">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

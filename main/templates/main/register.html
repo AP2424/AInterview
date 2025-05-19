@@ -1,0 +1,64 @@
+{% load static %}
+<html>
+<head>
+    <title>Register - AInterview</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="register-container">
+        <h1 class="register-title">Create Account</h1>
+        
+        <form method="post" enctype="multipart/form-data" class="register-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_name">First Name</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_surname">Last Name</label>
+                {{ form.surname }}
+                {{ form.surname.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password1">Password</label>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">Confirm Password</label>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_profile_picture">Profile Picture</label>
+                {{ form.profile_picture }}
+                {{ form.profile_picture.errors }}
+            </div>
+
+            <button type="submit" class="register-button">Create Account</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% load static %}
+<html>
+<head>
+    <title>Score Breakdown</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="breakdown-container">
+        <h1 class="breakdown-title">Interview Score Breakdown</h1>
+        
+        <div class="breakdown-header">
+            <div class="applicant-info">
+                <h2>{{ interview.applicant.name }} {{ interview.applicant.surname }}</h2>
+                <p class="program-name">{{ interview.questions.studyProgram.courseName }}</p>
+                <p class="total-score">Total Score: {{ interview.score|floatformat:1 }}/10</p>
+            </div>
+            {% if interview.recording %}
+            <div class="recording-section">
+                <h3>Interview Recording</h3>
+                <video controls class="interview-video">
+                    <source src="{{ interview.recording.url }}" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="questions-grid">
+            {% for qa in qa_pairs %}
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="question-number">Question {{ qa.question.position }}</span>
+                    <span class="question-score">Score: {{ qa.answer.score|floatformat:1 }}/10</span>
+                </div>
+                
+                <div class="question-content">
+                    <p class="question-text">{{ qa.question.questionText }}</p>
+                    {% if qa.question.type == 'knowledge' %}
+                        <p class="expected-answer"><strong>Expected Answer:</strong> {{ qa.question.answer }}</p>
+                    {% endif %}
+                    <p class="given-answer"><strong>Given Answer:</strong> {{ qa.answer.answer }}</p>
+                </div>
+
+                {% if qa.answer.audio_response %}
+                <div class="audio-section">
+                    <audio controls>
+                        <source src="{{ qa.answer.audio_response.url }}" type="audio/webm">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                {% endif %}
+
+                <div class="model-feedback">
+                    <p class="model-comment">{{ qa.answer.model_comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'ranking' %}" class="back-button">Back to Rankings</a>
+    </div>
+</body>
+</html>
