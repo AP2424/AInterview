@@ -159,8 +159,48 @@
             const [mediaRecorder, setMediaRecorder] = React.useState(null);
             const [recordedChunks, setRecordedChunks] = React.useState([]);
             const [recording, setRecording] = React.useState(false);
+            const [audioRecorder, setAudioRecorder] = React.useState(null);
+            const [audioChunks, setAudioChunks] = React.useState([]);
 
-            // Set up recording once at component mount
+            React.useEffect(() => {
+                async function setupAudioRecording() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            audio: true 
+                        });
+
+                        const recorder = new MediaRecorder(stream, {
+                            mimeType: 'audio/webm;codecs=opus',
+                            audioBitsPerSecond: 128000
+                        });
+                        
+                        recorder.ondataavailable = (event) => {
+                            console.log('Audio data size:', event.data.size);
+                            if (event.data.size > 0) {
+                                console.log('Audio chunk received');
+                                setAudioChunks(prev => [...prev, event.data]);
+                                console.log(audioChunks);
+                            }
+                        };
+
+                        recorder.onstart = () => {
+                            console.log('Audio recording started');
+                            setAudioChunks([]);
+                        };
+
+                        recorder.onstop = () => {
+                            console.log('Audio recording stopped');
+                        };
+
+                        setAudioRecorder(recorder);
+                    } catch (error) {
+                        console.error("Error setting up audio recording:", error);
+                    }
+                }
+                setupAudioRecording();
+            }, []);
+                
+
             React.useEffect(() => {
                 async function setupRecording() {
                     try {
@@ -212,7 +252,6 @@
                 };
             }, []);
 
-            // Remove the recording control effect as we're now recording continuously
 
             // Handle question timer
             React.useEffect(() => {
@@ -238,33 +277,55 @@
                 return () => clearInterval(timer);
             }, [currentIndex, isPreparation]);
 
-            const handleTimeUp = async () => {
-                if (currentIndex < questions.length - 1) {
-                    setCurrentIndex(prevIndex => prevIndex + 1);
-                    setIsPreparation(true);
-                } else {
-                    // Only stop recording at the very end
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        mediaRecorder.stop();
-                        setRecording(false);
-                    }
-                    await saveRecording();
-                    window.location.href = '/dashboard/';
-                }
+            const handleTimeUp = () => {
+                handleNextQuestion();
             };
 
             const handleNextQuestion = async () => {
+                if (audioRecorder && audioRecorder.state === 'recording') {
+                    let collectedChunks = [];
+                    const dataPromise = new Promise(resolve => {
+                        const handleDataAvailable = async (event) => {
+                        if (event.data.size > 0) {
+                            collectedChunks.push(event.data);
+                            // Update chunks and wait for state to be updated
+                            await new Promise(resolveState => {
+                                setAudioChunks(prev => {
+                                    const newChunks = [...prev, event.data];
+                                    console.log('Current audio chunks:', newChunks);
+                                    resolveState();
+                                    return newChunks;
+                                });
+                            });
+                        }
+                        resolve();
+                        };
+
+                    audioRecorder.addEventListener('dataavailable', handleDataAvailable, { once: true });
+                    audioRecorder.requestData();
+                    });
+
+                    await dataPromise;
+                    console.log('Audio data available:', collectedChunks);
+                    await saveAudioChunk(collectedChunks);
+                    audioRecorder.stop();
+                    
+                }
+
+                // Wait for audio to be saved
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
                 if (currentIndex < questions.length - 1) {
                     setCurrentIndex(prevIndex => prevIndex + 1);
                     setIsPreparation(true);
+                    setAudioChunks([]); // Reset for next question
                 } else {
                     if (mediaRecorder && mediaRecorder.state === 'recording') {
                         mediaRecorder.stop();
                         setRecording(false);
                     }
                     await saveRecording();
-                    alert("End of interview!");
-                    window.location.href = '/dashboard/';
+                    window.location.href = '/applicant/';
                 }
             };
 
@@ -305,8 +366,36 @@
 
             const handlePreparationComplete = () => {
                 setIsPreparation(false);
+                if (audioRecorder) {
+                    audioRecorder.start(); // Start recording when question begins
+                }
             };
 
+            const saveAudioChunk = async (collectedChunks) => {
+                console.log('Saving audio chunk, size:', collectedChunks.length);
+                if (collectedChunks.length === 0) return;
+
+                const blob = new Blob(collectedChunks, { type: 'audio/webm' });
+                console.log('Saving audio chunk:', blob.size);
+
+                const formData = new FormData();
+                formData.append('audio', blob, `question_${currentIndex + 1}.webm`);
+                formData.append('question_id', currentIndex + 1);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                try {
+                    const response = await fetch('/save-audio-chunk/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to save audio chunk');
+                    console.log(`Audio for question ${currentIndex + 1} saved`);
+                    setAudioChunks([]); // Clear chunks after successful save
+                } catch (error) {
+                    console.error('Error saving audio chunk:', error);
+                }
+            };
             if (isPreparation) {
                 return (
                     <QuestionPreparation 

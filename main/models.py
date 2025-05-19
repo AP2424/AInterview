@@ -37,7 +37,6 @@ class Applicant(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='applicant')
-    studyProgram = models.ForeignKey(StudyProgram, on_delete=models.SET_NULL, null=True)
     profilePicture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     
 class InterviewModel(models.Model):
@@ -74,3 +73,12 @@ class ConductedInterview(models.Model):
     recording = models.FileField(upload_to='videos/')
     score = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0.0) # in a range from 0 to 10
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='in progress')
+
+class InterviewAnswer(models.Model):
+    interview = models.ForeignKey(ConductedInterview, on_delete=models.CASCADE)
+    question_number = models.IntegerField(default=0)
+    answer = models.CharField(max_length=1000, default='', null=True, blank=True)
+    timeTaken = models.IntegerField(default=0)
+    audio_response = models.FileField(upload_to='audio_responses/', null=True, blank=True)
+    score = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0.0) # in a range from 0 to 10
+    model_comment = models.CharField(max_length=500, default='', null=True, blank=True)

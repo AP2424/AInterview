@@ -2,7 +2,8 @@ import django
 from django.contrib import admin
 from django.urls import path
 from main.views import (CoursesMain, editor, profile, interview, loginmain, 
-student_login, committee_login, start_interview, save_recording, save_start_time, applicantDashboard)
+student_login, committee_login, start_interview, save_recording, save_start_time, 
+applicantDashboard, save_audio_chunk, ranking, score_breakdown, register)
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -19,6 +20,10 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('save-recording/', save_recording, name='save-recording'),
     path('save-start-time/', save_start_time, name='save-start-time'),
+    path('save-audio-chunk/', save_audio_chunk, name='save-audio-chunk'),
+    path('ranking/', ranking, name='ranking'),
+    path('interview/<int:interview_id>/breakdown/', score_breakdown, name='score-breakdown'),
+    path('register/', register, name='register'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

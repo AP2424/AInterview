@@ -781,3 +781,284 @@ body {
 .status-icon {
     margin-right: 8px;
 }
+
+.ranking-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.ranking-title {
+    text-align: center;
+    color: #004d40;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.ranking-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ranking-table th,
+.ranking-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ranking-table th {
+    background-color: #004d40;
+    color: white;
+    font-weight: bold;
+}
+
+.ranking-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.view-recording-btn {
+    display: inline-block;
+    background-color: #004d40;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.view-recording-btn:hover {
+    background-color: #00695c;
+}
+
+.breakdown-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.breakdown-title {
+    text-align: center;
+    color: #004d40;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.breakdown-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.applicant-info {
+    padding: 1rem;
+}
+
+.program-name {
+    color: #00695c;
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.total-score {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #004d40;
+}
+
+.recording-section {
+    padding: 1rem;
+}
+
+.interview-video {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.questions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.question-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #004d40;
+}
+
+.question-number {
+    font-weight: bold;
+    color: #004d40;
+}
+
+.question-score {
+    font-weight: bold;
+    color: #00695c;
+}
+
+.question-content {
+    margin-bottom: 1rem;
+}
+
+.question-text {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.expected-answer, .given-answer {
+    margin: 0.5rem 0;
+}
+
+.audio-section {
+    margin: 1rem 0;
+}
+
+.audio-section audio {
+    width: 100%;
+}
+
+.model-feedback {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.model-comment {
+    font-style: italic;
+    color: #666;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #004d40;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 2rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #00695c;
+}
+
+.register-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 3rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.register-title {
+    text-align: center;
+    color: #004d40;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.register-form {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.form-group label {
+    color: #004d40;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 1rem;
+    height: 35px;
+    box-sizing: border-box;
+}
+
+.form-group input[type="file"] {
+    padding: 0.4rem;
+    height: 45px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #004d40;
+}
+
+.register-button {
+    background-color: #004d40;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.register-button:hover {
+    background-color: #00695c;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+}
+
+.login-link a {
+    color: #004d40;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.errorlist {
+    color: #d32f2f;
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0;
+    font-size: 0.875rem;
+}
