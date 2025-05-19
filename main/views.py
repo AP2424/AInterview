@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import datetime
 import json
 from django.contrib.auth import login
