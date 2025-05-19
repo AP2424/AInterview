@@ -6,7 +6,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        admin = User.objects.filter(username='admin').first()
+        admin = User.objects.filter(username='admin1').first()
         if admin:
             admin.set_password('P@ssword123$')
             admin.save()
