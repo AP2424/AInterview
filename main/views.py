@@ -109,7 +109,7 @@ def student_login(request):
         print(user)
         if user is not None and user.role == 'applicant':
             login(request, user)
-            return HttpResponseRedirect(reverse('start-interview', args=[user.applicant.studyProgram.id]))
+            return HttpResponseRedirect(reverse('dashboard'))
         else:
             return render(request, 'main/studentlogin.html', {'error': 'Invalid credentials'})
     return render(request, 'main/studentlogin.html')
